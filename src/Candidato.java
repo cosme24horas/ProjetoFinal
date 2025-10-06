@@ -1,6 +1,8 @@
+package src;
 public class Candidato extends Pessoa {
     private int numero;
-    private Cargo cargo;
+    private String cargo;
+    //private Cargo cargo;
     private int votos;
 
     public Candidato(String nome, int numero, Cargo cargo) {
