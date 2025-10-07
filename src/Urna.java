@@ -34,27 +34,24 @@ public class Urna {
         
         //Prepara e exibe o menu principal para o eleitor
         System.out.println("Urna Eletronica");
-        System.out.println("Data: " + urnaSerraSaudadeMG.dataFormatoBrasileiro);
-        System.out.println("1 - Votar em Prefeito \n2 - Votar em Vereador");
+        System.out.println("Data: " + urnaSerraSaudadeMG.dataFormatoBrasileiro);       
+
+        System.out.println("1 - Votar em Prefeito \n2 - Votar em Vereador"); 
         opcao = scanner.nextInt();
 
         if(opcao == 1){
-            System.out.println("Candidatos a Prefeito");
-            urnaSerraSaudadeMG.exibeCandidatosPrefeito();
+            urnaSerraSaudadeMG.exibeInstrucoes();
+            System.out.println(" Prefeito");
+            urnaSerraSaudadeMG.recebeVoto(scanner.nextInt(),Cargo.PREFEITO);
         } else if(opcao == 2){
-            System.out.println("Candidatos a Vereador");
-            urnaSerraSaudadeMG.exibeCandidatosVereador();
+            urnaSerraSaudadeMG.exibeInstrucoes();
+            System.out.println(" Vereador");
+            //urnaSerraSaudadeMG.recebeVoto(scanner.nextInt(),Cargo.VEREADOR);
         } else {
             System.out.println("Opcao invalida!");
         }
-        System.out.println("Digite o numero do candidato");
-        
-        System.out.println("0 - Branco");
-        System.out.println("-1 - Encerrar votacao");
-        //urnaSerraSaudadeMG.Votar(scanner.nextInt(), opcao);
-        //urnaSerraSaudadeMG.confirmaVoto();
-        //urnaSerraSaudadeMG.mostraApuracao();
 
+        //urnaSerraSaudadeMG.mostraApuracao();
         scanner.close();
     }
     
@@ -71,6 +68,12 @@ public class Urna {
         this.candidatosPrefeito = prefeitos;
         this.candidatosVereador = vereadores;
         System.out.println("Urna inicializada com " + prefeitos.length + " candidatos a prefeito e " + vereadores.length + " candidatos a vereador.");
+        System.out.println("Candidatos a Prefeito: ");
+        this.exibeCandidatosPrefeito();
+        this.exibeSeparador();
+        System.out.println("Candidatos a Vereador: ");
+        this.exibeCandidatosVereador();
+        this.exibeSeparador();
     }    
 
     // Exibe a lista de candidatos a prefeito
@@ -88,6 +91,56 @@ public class Urna {
             for (Candidato candidato : candidatosVereador) {
                 System.out.println(candidato.getNumero() + " - " + candidato.getNome());
             }
+        }
+    }
+
+    public void exibeSeparador() {
+        System.out.println("<-------------------------------------------------->");
+    }
+
+    public void exibeInstrucoes() {
+        System.out.println("Digite o numero do candidato");            
+        System.out.println("0 - Branco");
+        System.out.println("-1 - Encerrar votacao");
+    }
+    
+    /**
+     * Recebe o voto do eleitor e processa de acordo com o cargo
+     * @param numeroCandidato O número digitado pelo eleitor
+     * @param cargo O cargo para o qual está votando (PREFEITO ou VEREADOR)
+     */
+    public void recebeVoto(int numeroCandidato, Cargo cargo) {
+        // Voto nulo (encerrar votação)
+        if (numeroCandidato == -1) {
+            System.out.println("Votação encerrada!");
+            return;
+        }
+        
+        // Voto branco
+        if (numeroCandidato == 0) {
+            System.out.println("Voto BRANCO computado!");
+            return;
+        }
+        
+        // Buscar candidato na lista apropriada
+        Candidato[] listaCandidatos = (cargo == Cargo.PREFEITO) ? candidatosPrefeito : candidatosVereador;
+        Candidato candidatoEncontrado = null;
+        
+        for (Candidato candidato : listaCandidatos) {
+            if (candidato.getNumero() == numeroCandidato) {
+                candidatoEncontrado = candidato;
+                break;
+            }
+        }
+        
+        // Processar o voto
+        if (candidatoEncontrado != null) {
+            candidatoEncontrado.adicionarVoto();
+            System.out.println("Voto computado para: " + candidatoEncontrado.getNome());
+            System.out.println("Número: " + candidatoEncontrado.getNumero());
+            System.out.println("Cargo: " + candidatoEncontrado.getCargo());
+        } else {
+            System.out.println("VOTO NULO - Candidato não encontrado!");
         }
     }
     
